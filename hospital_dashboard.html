@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ResQ-AI Hospital Dashboard</title>
+    <style>
+        body { font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #f4f6f8; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        
+        /* Tablet/Desktop Window Frame */
+        .dashboard-container {
+            width: 900px;
+            height: 600px;
+            background: white;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+            border-radius: 12px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        /* Top Navigation */
+        .navbar {
+            background-color: #0d47a1; /* Deep Blue */
+            color: white;
+            padding: 0 25px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .nav-brand { font-size: 20px; font-weight: 600; display: flex; align-items: center; gap: 10px; }
+        .nav-user { font-size: 14px; opacity: 0.9; display: flex; align-items: center; gap: 8px; }
+        .user-avatar { width: 32px; height: 32px; background: #42a5f5; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; }
+
+        /* Main Content Grid */
+        .main-content { padding: 30px; display: grid; grid-template-columns: 2fr 1fr; gap: 20px; height: 100%; background: #f9fafb; }
+
+        /* Left Column: Resource Management */
+        .resource-section { display: flex; flex-direction: column; gap: 20px; }
+        .section-title { font-size: 18px; font-weight: 600; color: #37474f; margin-bottom: 5px; }
+        
+        /* Resource Cards */
+        .resource-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            border: 1px solid #e0e0e0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+        }
+        .res-info h3 { margin: 0 0 5px 0; font-size: 16px; color: #263238; }
+        .res-info p { margin: 0; font-size: 13px; color: #78909c; }
+        
+        /* Toggles */
+        .toggle-switch {
+            width: 120px;
+            height: 40px;
+            border-radius: 25px;
+            display: flex;
+            align-items: center;
+            padding: 4px;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+        }
+        
+        /* Available State */
+        .toggle-on { background-color: #e8f5e9; border: 2px solid #43a047; }
+        .toggle-on .knob { width: 32px; height: 32px; background: #43a047; border-radius: 50%; margin-left: auto; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+        .toggle-on::before { content: "OPEN"; position: absolute; left: 15px; color: #43a047; font-weight: bold; font-size: 12px; }
+
+        /* Full State */
+        .toggle-off { background-color: #ffebee; border: 2px solid #e53935; }
+        .toggle-off .knob { width: 32px; height: 32px; background: #e53935; border-radius: 50%; margin-right: auto; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+        .toggle-off::after { content: "FULL"; position: absolute; right: 15px; color: #e53935; font-weight: bold; font-size: 12px; }
+
+        /* Right Column: Incoming Feed */
+        .feed-section { background: white; border-radius: 10px; border: 1px solid #e0e0e0; padding: 0; overflow: hidden; display: flex; flex-direction: column; }
+        .feed-header { background: #eceff1; padding: 15px; font-weight: 600; color: #455a64; border-bottom: 1px solid #ddd; }
+        
+        /* Alert Card (The Highlight) */
+        .alert-card {
+            margin: 15px;
+            padding: 15px;
+            background: #fff3e0;
+            border-left: 5px solid #ff9800;
+            border-radius: 4px;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(255, 152, 0, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(255, 152, 0, 0); } 100% { box-shadow: 0 0 0 0 rgba(255, 152, 0, 0); } }
+
+        .alert-tag { background: #ff9800; color: white; padding: 2px 6px; border-radius: 3px; font-size: 10px; font-weight: bold; text-transform: uppercase; }
+        .alert-title { font-size: 15px; font-weight: bold; margin: 8px 0 4px 0; color: #e65100; }
+        .alert-meta { font-size: 12px; color: #ef6c00; display: flex; justify-content: space-between; }
+        
+        .timer-badge { background: #d32f2f; color: white; padding: 4px 8px; border-radius: 12px; font-size: 12px; font-weight: bold; }
+
+    </style>
+</head>
+<body>
+
+    <div class="dashboard-container">
+        <div class="navbar">
+            <div class="nav-brand">
+                <span>🏥</span> City General Hospital
+            </div>
+            <div class="nav-user">
+                <span>Dr. Sarah Admin</span>
+                <div class="user-avatar">SA</div>
+            </div>
+        </div>
+
+        <div class="main-content">
+            
+            <div class="resource-section">
+                <div class="section-title">Live Resource Availability</div>
+                
+                <div class="resource-card">
+                    <div class="res-info">
+                        <h3>ICU Beds</h3>
+                        <p>Critical Care Unit - Wing A</p>
+                    </div>
+                    <div class="toggle-switch toggle-off">
+                        <div class="knob"></div>
+                    </div>
+                </div>
+
+                <div class="resource-card">
+                    <div class="res-info">
+                        <h3>Trauma Center</h3>
+                        <p>Emergency Surgery Team</p>
+                    </div>
+                    <div class="toggle-switch toggle-on">
+                        <div class="knob"></div>
+                    </div>
+                </div>
+
+                <div class="resource-card">
+                    <div class="res-info">
+                        <h3>Ventilators</h3>
+                        <p>Portable & Fixed Units</p>
+                    </div>
+                    <div class="toggle-switch toggle-on">
+                        <div class="knob"></div>
+                    </div>
+                </div>
+                
+                <div style="margin-top: auto; padding: 15px; background: #e3f2fd; border-radius: 8px; font-size: 13px; color: #1565c0;">
+                    ℹ️ <strong>System Note:</strong> Your status is synced with ResQ-AI Dispatch. Ambulances will divert if you mark "FULL".
+                </div>
+            </div>
+
+            <div class="feed-section">
+                <div class="feed-header">Incoming Dispatch Feed</div>
+                
+                <div class="alert-card">
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <span class="alert-tag">PRIORITY DISPATCH</span>
+                        <span class="timer-badge">ETA: 6 min</span>
+                    </div>
+                    <div class="alert-title">Cardiac Arrest - Male (54)</div>
+                    <div class="alert-meta">
+                        <span>🚑 Ambulance B-04</span>
+                        <span>Requires: Trauma Team</span>
+                    </div>
+                    <div style="margin-top: 10px; font-size: 11px; color: #bf360c;">
+                        * Vitals shared to ER Monitor
+                    </div>
+                </div>
+
+                <div style="padding: 15px; border-bottom: 1px solid #eee; opacity: 0.6;">
+                    <div style="font-size: 13px; font-weight: bold;">Road Accident - Minor</div>
+                    <div style="font-size: 11px; color: #666;">Arrived 14 mins ago • Discharged</div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</body>
+</html>

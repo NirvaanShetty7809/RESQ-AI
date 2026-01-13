@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; margin: 0; background: #f0f2f5; display: flex; justify-content: center; align-items: center; height: 100vh; }
+        
+        /* The Main App Window */
+        .window { width: 900px; height: 600px; background: white; border-radius: 12px; box-shadow: 0 20px 50px rgba(0,0,0,0.2); overflow: hidden; display: flex; flex-direction: column; }
+        
+        /* Header */
+        .header { background: #1a73e8; color: white; padding: 15px 25px; display: flex; justify-content: space-between; align-items: center; }
+        .header h2 { margin: 0; font-size: 18px; }
+        .badge { background: #e8f0fe; color: #1a73e8; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: bold; }
+
+        /* Content Area */
+        .content { display: flex; flex: 1; }
+
+        /* Sidebar */
+        .sidebar { width: 300px; background: white; border-right: 1px solid #ddd; padding: 20px; z-index: 2; box-shadow: 2px 0 10px rgba(0,0,0,0.05); }
+        .card { border: 1px solid #eee; border-radius: 8px; padding: 15px; margin-bottom: 15px; position: relative; }
+        
+        /* Recommendation Card Style */
+        .card.recommended { border: 2px solid #34a853; background: #e6f4ea; }
+        .rec-tag { position: absolute; top: -10px; right: 10px; background: #34a853; color: white; padding: 2px 8px; font-size: 10px; border-radius: 4px; font-weight: bold; }
+        
+        .stat-row { display: flex; justify-content: space-between; margin-top: 8px; font-size: 13px; color: #555; }
+        .bold { font-weight: bold; color: #333; }
+        .red { color: #d93025; }
+        .green { color: #188038; }
+
+        /* The Mock Map */
+        .map-area { flex: 1; background: #e8eaed; position: relative; overflow: hidden; }
+        /* Map Roads */
+        .road { position: absolute; background: white; border: 1px solid #ddd; }
+        .h-road { width: 100%; height: 40px; top: 50%; transform: translateY(-50%); }
+        .v-road { height: 100%; width: 40px; left: 50%; transform: translateX(-50%); }
+        
+        /* Routes */
+        .route-line { position: absolute; height: 6px; border-radius: 10px; opacity: 0.8; }
+        .route-bad { background: #d93025; width: 35%; top: 51%; left: 15%; transform: rotate(0deg); } /* Ambulance 1 Path */
+        .route-good { background: #34a853; width: 40%; top: 30%; left: 50%; transform: rotate(45deg); height: 6px; } /* Ambulance 2 Path */
+
+        /* Pins */
+        .pin { width: 14px; height: 14px; border-radius: 50%; position: absolute; border: 2px solid white; box-shadow: 0 2px 4px rgba(0,0,0,0.3); }
+        .patient-pin { background: #d93025; top: 49%; left: 49%; width: 20px; height: 20px; z-index: 10; } /* Center */
+        .amb1-pin { background: #fbbc04; top: 49%; left: 15%; }
+        .amb2-pin { background: #1a73e8; top: 20%; left: 80%; }
+        
+        /* Labels on Map */
+        .label { position: absolute; background: white; padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: bold; box-shadow: 0 2px 4px rgba(0,0,0,0.2); white-space: nowrap; }
+        .l-patient { top: 54%; left: 48%; color: #d93025; }
+        .l-amb1 { top: 44%; left: 14%; color: #fbbc04; }
+        .l-amb2 { top: 15%; left: 78%; color: #1a73e8; }
+
+    </style>
+</head>
+<body>
+
+    <div class="window">
+        <div class="header">
+            <div style="display:flex; align-items:center; gap:10px;">
+                <span>🚑</span>
+                <h2>ResQ-AI <span style="font-weight:400; font-size:14px; opacity:0.8;">| Dispatch Command</span></h2>
+            </div>
+            <div class="badge">LIVE INCIDENT #9021</div>
+        </div>
+
+        <div class="content">
+            <div class="sidebar">
+                <h3 style="margin-top:0; font-size:14px; color:#5f6368; text-transform:uppercase;">Ambulance Options</h3>
+                
+                <div class="card">
+                    <div style="font-weight:bold; color:#fbbc04;">Ambulance A-01 (Nearest)</div>
+                    <div class="stat-row">
+                        <span>Distance:</span> <span class="bold">2.1 km</span>
+                    </div>
+                    <div class="stat

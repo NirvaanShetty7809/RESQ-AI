@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ResQ-AI Driver App</title>
+    <style>
+        body { font-family: 'Roboto', 'Segoe UI', sans-serif; background-color: #333; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        
+        /* The Phone Frame */
+        .phone-frame {
+            width: 375px;
+            height: 750px;
+            background: #202124; /* Dark Mode Map Background */
+            border-radius: 40px;
+            border: 12px solid #000;
+            box-shadow: 0 30px 80px rgba(0,0,0,0.5);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Top Bar */
+        .status-bar { height: 30px; display: flex; justify-content: space-between; padding: 10px 20px; color: white; font-size: 12px; font-weight: bold; z-index: 10; }
+        
+        /* The Header Overlay */
+        .nav-header {
+            background: #202124;
+            padding: 15px 20px;
+            color: white;
+            z-index: 5;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+        .turn-instruction { font-size: 24px; font-weight: bold; display: flex; align-items: center; gap: 15px; }
+        .turn-icon { font-size: 30px; transform: rotate(90deg); }
+        .next-step { font-size: 14px; color: #9aa0a6; margin-top: 5px; margin-left: 45px; }
+
+        /* The Map Area */
+        .map-layer { flex: 1; position: relative; background: #2c2e33; overflow: hidden; }
+        
+        /* Abstract Roads */
+        .road { position: absolute; background: #5f6368; border-radius: 4px; }
+        .r1 { width: 100px; height: 800px; left: 60%; top: -100px; transform: rotate(15deg); }
+        .r2 { width: 400px; height: 80px; left: -50px; top: 40%; transform: rotate(-10deg); }
+
+        /* Route Line */
+        .route {
+            position: absolute;
+            width: 12px;
+            background: #4285f4; /* Google Blue */
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(66, 133, 244, 0.5);
+            z-index: 2;
+        }
+        /* Current Path */
+        .path-main { height: 400px; left: 65%; top: 40%; transform: rotate(15deg); }
+        
+        /* The "Old" Path (Traffic) */
+        .path-traffic { 
+            position: absolute; width: 12px; height: 300px; left: 62%; top: -10%; transform: rotate(15deg); 
+            background: repeating-linear-gradient(45deg, #d93025, #d93025 10px, #b31412 10px, #b31412 20px);
+            opacity: 0.6;
+        }
+
+        /* The Location Puck */
+        .puck {
+            width: 24px; height: 24px; background: #4285f4; border: 3px solid white; border-radius: 50%;
+            position: absolute; top: 75%; left: 52%; box-shadow: 0 4px 10px rgba(0,0,0,0.4); z-index: 5;
+        }
+        .puck::after { content: ''; position: absolute; width: 60px; height: 60px; background: rgba(66, 133, 244, 0.3); border-radius: 50%; top: -20px; left: -20px; animation: ping 1.5s infinite; }
+        @keyframes ping { 0% { transform: scale(0.5); opacity: 1; } 100% { transform: scale(1.5); opacity: 0; } }
+
+        /* REROUTING ALERT (The Hero Feature) */
+        .alert-overlay {
+            position: absolute;
+            top: 20px; left: 20px; right: 20px;
+            background: #202124;
+            border: 1px solid #d93025;
+            border-left: 6px solid #d93025;
+            border-radius: 8px;
+            padding: 15px;
+            color: white;
+            z-index: 10;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.5);
+            animation: slideDown 0.5s ease-out;
+        }
+        @keyframes slideDown { from { transform: translateY(-50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+        .alert-title { color: #f28b82; font-weight: bold; font-size: 14px; margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .alert-text { font-size: 16px; font-weight: bold; }
+        .alert-sub { font-size: 12px; color: #9aa0a6; margin-top: 5px; }
+        .save-badge { display: inline-block; background: #1e8e3e; color: white; padding: 2px 6px; border-radius: 4px; font-size: 11px; margin-left: 5px; }
+
+        /* Bottom UI */
+        .bottom-panel {
+            background: #202124;
+            padding: 20px;
+            color: white;
+            z-index: 5;
+            border-top: 1px solid #3c4043;
+        }
+        .meta-info { display: flex; justify-content: space-between; align-items: flex-end; }
+        .time-big { font-size: 32px; font-weight: bold; color: #8ab4f8; }
+        .time-label { font-size: 14px; color: #9aa0a6; }
+        .dest-info { text-align: right; }
+        .dest-name { font-size: 16px; font-weight: bold; }
+        .dest-status { font-size: 12px; color: #81c995; font-weight: bold; margin-top: 4px; }
+        
+        .cancel-btn { 
+            margin-top: 15px; width: 100%; padding: 12px; background: #3c4043; color: white; 
+            border: none; border-radius: 25px; font-weight: bold; text-align: center;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="phone-frame">
+        <div class="status-bar">
+            <span>10:42</span>
+            <span>LTE 🔋</span>
+        </div>
+
+        <div class="nav-header">
+            <div class="turn-instruction">
+                <span class="turn-icon">⬆</span> 
+                <span>Keep Straight</span>
+            </div>
+            <div class="next-step">onto Highway 401 (Express)</div>
+        </div>
+
+        <div class="map-layer">
+            <div class="road r1"></div>
+            <div class="road r2"></div>
+            
+            <div class="path-traffic"></div> <div class="path-main"></div> <div class="puck"></div>
+
+            <div class="alert-overlay">
+                <div class="alert-title">⚠️ Traffic Spike Detected</div>
+                <div class="alert-text">Rerouting to Exit 4B...</div>
+                <div class="alert-sub">Avoids 2km gridlock <span class="save-badge">SAVES 4 MIN</span></div>
+            </div>
+        </div>
+
+        <div class="bottom-panel">
+            <div class="meta-info">
+                <div>
+                    <div class="time-big">9 min</div>
+                    <div class="time-label">10:51 arrival</div>
+                </div>
+                <div class="dest-info">
+                    <div class="dest-name">City General Hospital</div>
+                    <div class="dest-status">✓ TRAUMA READY</div>
+                </div>
+            </div>
+            <button class="cancel-btn">END EMERGENCY MODE</button>
+        </div>
+    </div>
+
+</body>
+</html>
