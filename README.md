@@ -31,7 +31,7 @@ Since this is a hackathon MVP, the core interface logic is demonstrated via high
 
 1.  **Clone the repository:**
     ```bash
-    git clone [https://github.com/your-username/RESQ-AI.git](https://github.com/your-username/RESQ-AI.git)
+    git clone [https://github.com/NirvaanShetty7809/RESQ-AI.git](https://github.com/NirvaanShetty7809/RESQ-AI.git)
     ```
 2.  **Open the Simulation:**
     * Navigate to the `mvp-screens/` folder.
